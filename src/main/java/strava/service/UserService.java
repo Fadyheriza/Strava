@@ -33,7 +33,14 @@ public class UserService {
         user.setRestHeartRate(userDTO.getRestHeartRate());
         user.setProvider(userDTO.getProvider());
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace(); // Optional: Use a logger for better logging
+            return "Error occurred while registering user: " + e.getMessage();
+        }
+
         return "Registration successful for " + user.getEmail();
     }
 }

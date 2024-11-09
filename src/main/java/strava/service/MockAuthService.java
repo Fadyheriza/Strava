@@ -1,20 +1,16 @@
 package strava.service;
 
 import org.springframework.stereotype.Service;
-import java.util.Set;
 
 @Service
 public class MockAuthService {
 
-    private final Set<String> googleEmails = Set.of("user1@gmail.com", "user2@gmail.com");
-    private final Set<String> facebookEmails = Set.of("user1@facebook.com", "user2@facebook.com");
-
     public boolean authenticate(String email, String provider) {
-        if (provider.equalsIgnoreCase("Google")) {
-            return googleEmails.contains(email);
-        } else if (provider.equalsIgnoreCase("Facebook")) {
-            return facebookEmails.contains(email);
+        if ("Google".equalsIgnoreCase(provider) && email.endsWith("@gmail.com")) {
+            return true;  // Accepts any email ending with @gmail.com for Google
+        } else if ("Facebook".equalsIgnoreCase(provider) && email.endsWith("@facebook.com")) {
+            return true;  // Accepts any email ending with @facebook.com for Facebook
         }
-        return false; // Unknown provider
+        return false;  // Reject if provider or email domain does not match
     }
 }

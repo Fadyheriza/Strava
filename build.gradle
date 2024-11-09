@@ -1,34 +1,41 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.0'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '3.2.0' // Your Spring Boot version
+    id 'io.spring.dependency-management' version '1.1.6' // Dependency management plugin
 }
 
-group = 'com.example'
+group = 'com.example'  // Your package or group name
 version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(21) // Java 21 (or the version you are using)
     }
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral()  // Use Maven Central repository for dependencies
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Boot starter dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web' // For REST APIs
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // For JPA
+    implementation 'org.springframework.boot:spring-boot-starter-mail' // For mail, if needed
+    runtimeOnly 'com.h2database:h2'  // H2 in-memory database
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // For testing
+
+    // Springdoc OpenAPI UI for Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0' // Correct version for Spring Boot 3.x
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0' // OpenAPI API
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform()  // Use JUnit Platform for testing
 }
+
 // Explicitly set the main class for bootRun
 bootRun {
-    mainClass = 'strava.Application'
+    mainClass = 'strava.Application'  // Adjust to your application's main class if necessary
 }
+
