@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@CrossOrigin(origins = "*")  // Allow all origins
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -22,8 +22,15 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Register a new user", description = "Registers a new user with their email, name, and other details. Valid providers are Google and Facebook.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User successfully registered"),
+            @ApiResponse(responseCode = "400", description = "Invalid input or user registration failed")
+    })
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> registerUser(
+            @Parameter(description = "User details including email, name, provider, etc.")
+            @RequestBody UserDTO userDTO) {
         String result = userService.registerUser(userDTO);
         if (result.startsWith("Error")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
