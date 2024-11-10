@@ -1,10 +1,11 @@
 package strava.repository;
 
-import strava.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import strava.model.User;
 
-@Repository
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-    // This interface provides CRUD operations for User entities.
+    boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

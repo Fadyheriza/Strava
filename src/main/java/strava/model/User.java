@@ -1,29 +1,47 @@
 package strava.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "app_user")  // Change to a non-reserved name
+@Table(name = "app_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String email;
+
     private String name;
+
+    private String password;
+
     private LocalDate birthdate;
+
     private Double weight;
+
     private Double height;
+
     private Integer maxHeartRate;
+
     private Integer restHeartRate;
-    private String provider; // "Google" or "Facebook"
+
+    private String provider;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<TrainingSession> trainingSessions;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_challenge",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "challenge_id")
+    )
+    private Set<Challenge> acceptedChallenges;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -34,6 +52,9 @@ public class User {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public LocalDate getBirthdate() { return birthdate; }
     public void setBirthdate(LocalDate birthdate) { this.birthdate = birthdate; }
@@ -52,4 +73,10 @@ public class User {
 
     public String getProvider() { return provider; }
     public void setProvider(String provider) { this.provider = provider; }
+
+    public List<TrainingSession> getTrainingSessions() { return trainingSessions; }
+    public void setTrainingSessions(List<TrainingSession> trainingSessions) { this.trainingSessions = trainingSessions; }
+
+    public Set<Challenge> getAcceptedChallenges() { return acceptedChallenges; }
+    public void setAcceptedChallenges(Set<Challenge> acceptedChallenges) { this.acceptedChallenges = acceptedChallenges; }
 }

@@ -1,46 +1,67 @@
 package strava.service;
 
-import strava.dto.UserDTO;
-import strava.model.User;
-import strava.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import strava.dto.UserLoginDTO;
+import strava.dto.UserRegistrationDTO;
+import strava.model.User;
+import strava.model.TrainingSession;
+import strava.model.Challenge;
+import strava.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MockAuthService authService;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserService(UserRepository userRepository, MockAuthService authService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.authService = authService;
     }
 
-    public String registerUser(UserDTO userDTO) {
-        if (!authService.authenticate(userDTO.getEmail(), userDTO.getProvider())) {
-            return "Error: Email is not registered with " + userDTO.getProvider();
+    public String registerUser(UserRegistrationDTO userRegistrationDTO) {
+        if (userRepository.existsByEmail(userRegistrationDTO.getEmail())) {
+            return "Error: Email already registered";
         }
-
         User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setName(userDTO.getName());
-        user.setBirthdate(userDTO.getBirthdate());
-        user.setWeight(userDTO.getWeight());
-        user.setHeight(userDTO.getHeight());
-        user.setMaxHeartRate(userDTO.getMaxHeartRate());
-        user.setRestHeartRate(userDTO.getRestHeartRate());
-        user.setProvider(userDTO.getProvider());
+        user.setEmail(userRegistrationDTO.getEmail());
+        user.setName(userRegistrationDTO.getName());
+        user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        user.setBirthdate(userRegistrationDTO.getBirthdate());
+        user.setWeight(userRegistrationDTO.getWeight());
+        user.setHeight(userRegistrationDTO.getHeight());
+        user.setMaxHeartRate(userRegistrationDTO.getMaxHeartRate());
+        user.setRestHeartRate(userRegistrationDTO.getRestHeartRate());
+        user.setProvider(userRegistrationDTO.getProvider());
 
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            // Log the exception
-            e.printStackTrace(); // Optional: Use a logger for better logging
-            return "Error occurred while registering user: " + e.getMessage();
+        userRepository.save(user);
+        return "Registration successful";
+    }
+
+    public boolean authenticateUser(UserLoginDTO loginDTO) {
+        Optional<User> userOpt = userRepository.findByEmail(loginDTO.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
         }
+        return false;
+    }
 
-        return "Registration successful for " + user.getEmail();
+    public List<TrainingSession> getUserTrainingSessions(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getTrainingSessions)
+                .orElse(null);
+    }
+
+    public List<Challenge> getAcceptedChallenges(String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> new ArrayList<>(user.getAcceptedChallenges())) // Convert Set to List
+                .orElse(null);
     }
 }

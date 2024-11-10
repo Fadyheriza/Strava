@@ -1,6 +1,9 @@
 package strava.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class UserDTO {
     private String email;
@@ -10,9 +13,14 @@ public class UserDTO {
     private Double height;
     private Integer maxHeartRate;
     private Integer restHeartRate;
-    private String provider; // Should be "Google" or "Facebook"
+    private String provider;
+    @Schema(hidden = true)  // Hides from Swagger docs
+    private List<TrainingSessionDTO> trainingSessions;
+    @Schema(hidden = true)  // Hides from Swagger docs// Updated to use DTO
+    private List<ChallengeDTO> acceptedChallenges;      // Updated to use DTO
 
     // Getters and Setters
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -36,4 +44,10 @@ public class UserDTO {
 
     public String getProvider() { return provider; }
     public void setProvider(String provider) { this.provider = provider; }
+
+    public List<TrainingSessionDTO> getTrainingSessions() { return trainingSessions; }
+    public void setTrainingSessions(List<TrainingSessionDTO> trainingSessions) { this.trainingSessions = trainingSessions; }
+
+    public List<ChallengeDTO> getAcceptedChallenges() { return acceptedChallenges; }
+    public void setAcceptedChallenges(List<ChallengeDTO> acceptedChallenges) { this.acceptedChallenges = acceptedChallenges; }
 }
