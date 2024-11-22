@@ -1,5 +1,6 @@
 package strava.service;
 
+import strava.dto.ChallengeDTO;
 import strava.model.Challenge;
 import strava.model.UserChallenge;
 import strava.repository.ChallengeRepository;
@@ -22,12 +23,21 @@ public class ChallengeService {
         this.userChallengeRepository = userChallengeRepository;
     }
 
-    public void createChallenge(Challenge challenge) {
+    public void createChallenge(ChallengeDTO challengeDTO) {
+        Challenge challenge = new Challenge();
+        challenge.setName(challengeDTO.getName());
+        challenge.setStartDate(challengeDTO.getStartDate());
+        challenge.setEndDate(challengeDTO.getEndDate());
+        challenge.setTargetDistance(challengeDTO.getTargetDistance());
+        challenge.setDescription(challengeDTO.getDescription());
         challengeRepository.save(challenge);
     }
 
-    public List<Challenge> getActiveChallenges() {
-        return challengeRepository.findAll();
+    public List<ChallengeDTO> getActiveChallenges() {
+        return challengeRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public void acceptChallenge(Long challengeId, String userEmail) {
@@ -37,15 +47,31 @@ public class ChallengeService {
         userChallengeRepository.save(userChallenge);
     }
 
-    public List<Challenge> getAcceptedChallenges(String userEmail) {
-        // Find all UserChallenge records by userEmail
+    public List<ChallengeDTO> getAcceptedChallenges(String userEmail) {
         List<UserChallenge> userChallenges = userChallengeRepository.findByUserEmail(userEmail);
-
-        // Extract challengeIds and retrieve corresponding Challenge entities
         List<Long> challengeIds = userChallenges.stream()
                 .map(UserChallenge::getChallengeId)
                 .collect(Collectors.toList());
 
-        return challengeRepository.findAllById(challengeIds);
+        return challengeRepository.findAllById(challengeIds)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ChallengeDTO convertToDTO(Challenge challenge) {
+        ChallengeDTO dto = new ChallengeDTO();
+        dto.setId(challenge.getId());
+        dto.setName(challenge.getName());
+        dto.setStartDate(challenge.getStartDate());
+        dto.setEndDate(challenge.getEndDate());
+        dto.setTargetDistance(challenge.getTargetDistance());
+        dto.setDescription(challenge.getDescription());
+        dto.setAcceptedUserEmails(challenge.getAcceptedUsers()
+                .stream()
+                .map(user -> user.getEmail())
+                .collect(Collectors.toList())
+        );
+        return dto;
     }
 }

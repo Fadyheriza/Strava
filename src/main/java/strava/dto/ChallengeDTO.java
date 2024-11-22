@@ -8,8 +8,9 @@ public class ChallengeDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Double targetDistance;
-    private List<String> acceptedUserEmails;  // List of emails for users who accepted the challenge
+    private Double targetDistance; // Target distance in kilometers (update in Swagger if needed)
+    private String description;
+    private List<String> acceptedUserEmails; // List of user emails instead of full user details
 
     // Getters and Setters
 
@@ -27,6 +28,9 @@ public class ChallengeDTO {
 
     public Double getTargetDistance() { return targetDistance; }
     public void setTargetDistance(Double targetDistance) { this.targetDistance = targetDistance; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
     public List<String> getAcceptedUserEmails() { return acceptedUserEmails; }
     public void setAcceptedUserEmails(List<String> acceptedUserEmails) { this.acceptedUserEmails = acceptedUserEmails; }

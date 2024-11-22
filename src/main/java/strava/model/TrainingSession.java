@@ -12,9 +12,7 @@ public class TrainingSession {
     private Long id;
 
     private LocalDateTime startTime;
-
     private LocalDateTime endTime;
-
     private Double distance;
 
     @ManyToOne

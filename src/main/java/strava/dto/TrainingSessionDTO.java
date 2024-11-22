@@ -1,21 +1,20 @@
 package strava.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
 public class TrainingSessionDTO {
-    private Long id;
-    private String email;
+    private Long id; // Include id for response purposes
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    @Schema(description = "Distance covered during the session in kilometers")
     private Double distance;
+    private String userEmail; // Reference to User by email only
 
     // Getters and Setters
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
 
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
@@ -25,4 +24,7 @@ public class TrainingSessionDTO {
 
     public Double getDistance() { return distance; }
     public void setDistance(Double distance) { this.distance = distance; }
+
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 }

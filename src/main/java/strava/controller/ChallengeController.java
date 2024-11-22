@@ -1,6 +1,6 @@
 package strava.controller;
 
-import strava.model.Challenge;
+import strava.dto.ChallengeDTO;
 import strava.service.ChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,15 @@ public class ChallengeController {
 
     @Operation(summary = "Create a new challenge")
     @PostMapping("/create")
-    public ResponseEntity<String> createChallenge(@RequestBody Challenge challenge) {
-        challengeService.createChallenge(challenge);
+    public ResponseEntity<String> createChallenge(@RequestBody ChallengeDTO challengeDTO) {
+        challengeService.createChallenge(challengeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Challenge created");
     }
 
     @Operation(summary = "Get active challenges")
     @GetMapping("/active")
-    public ResponseEntity<List<Challenge>> getActiveChallenges() {
-        List<Challenge> activeChallenges = challengeService.getActiveChallenges();
+    public ResponseEntity<List<ChallengeDTO>> getActiveChallenges() {
+        List<ChallengeDTO> activeChallenges = challengeService.getActiveChallenges();
         return ResponseEntity.ok(activeChallenges);
     }
 
@@ -42,10 +42,10 @@ public class ChallengeController {
         return ResponseEntity.ok("Challenge accepted");
     }
 
-    @Operation(summary = "Query accepted challenges")
+    @Operation(summary = "Query accepted challenges for a user")
     @GetMapping("/accepted/{userEmail}")
-    public ResponseEntity<List<Challenge>> getAcceptedChallenges(@PathVariable String userEmail) {
-        List<Challenge> challenges = challengeService.getAcceptedChallenges(userEmail);
+    public ResponseEntity<List<ChallengeDTO>> getAcceptedChallenges(@PathVariable String userEmail) {
+        List<ChallengeDTO> challenges = challengeService.getAcceptedChallenges(userEmail);
         return ResponseEntity.ok(challenges);
     }
 }
